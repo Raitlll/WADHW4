@@ -1,0 +1,48 @@
+<link href="/css/style.css" rel="stylesheet" type="text/css">
+
+<body>
+<%- include('./partial/header.ejs')%>
+
+<div class="postBoxSingle">
+    <div class="postHeader">
+        <img src="/images/userpic.png" alt="userPic">
+        <p class="userName"><%=post.username%></p>
+        <p class="date"><%=post.date%></p>
+    </div>
+    <div class="postDesc" onclick="location.href='/singlepost/<%=post.id%>'">
+        <% if (post.image != null && post.image != "") { %>
+        <img src="/images/<%=post.image%>" alt="postPic">
+        <%}%>
+        <p><%= post.description %></p>
+    </div>
+    <div>
+        <p class="likes" id="likeCount<%= post.id %>"><%= post.likes %></p>
+        <button class="like" id='<%=post.id%>' onclick="getID(<%=post.id%>)">
+            <img src="/images/like.png" alt="likeButton">
+        </button>
+    </div>
+    <button class="delete" data-del="<%= post.id %>">Delete post</button>
+</div>
+
+
+
+<%- include('./partial/footer.ejs')%>
+</body>
+<script>
+    function getID(id){
+        var a = document.getElementById('likeCount'+id);
+        var text = a.textContent;
+        var likes = Number(text);
+        likes = isNaN(likes) ? 0 : likes;
+        likes++;
+        document.getElementById('likeCount'+id).innerHTML = likes;
+        document.getElementById(id).disabled = true;
+    }
+    const delreq = document.querySelector('button.delete');
+    delreq.addEventListener('click', (e) => {
+        const endpoint = `/${delreq.dataset.del}`;
+        fetch(endpoint, {
+            method: 'DELETE',
+        }).then(window.location.href = '/')
+    });
+</script>
